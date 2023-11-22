@@ -1,0 +1,39 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Hoja.master.cs" Inherits="Ex2R.Hoja" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link href="CSS/Styles.css" rel="stylesheet" />
+    <link href="CSS/Grid.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+  <header class="main-header">
+  <label for="btn-nav" class="btn-nav"><i class="fas fa-bars"></i></label>
+  <input type="checkbox" id="btn-nav">
+  
+  <nav>
+    <ul class="navigation">
+      <li><a href="Inicio.aspx">INICIO</a></li>
+      <li><a href="wTecnicos.aspx">TECNICOS</a></li>
+      <li><a href="wEquipos.aspx">EQUIPOS</a></li>
+      <li><a href="wUsuarios.aspx">USUARIOS</a></li>
+    </ul>
+  </nav>
+  
+</header>
+
+</div>
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
