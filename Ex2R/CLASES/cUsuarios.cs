@@ -9,127 +9,121 @@ namespace Ex2R.CLASES
 {
     public class cUsuarios
     {
-        public int IDUsuario { get; set; }
-        public string Nombre { get; set; }
-        public string CorreoE { get; set; }
-        public string Telefono { get; set; }
+        public static int IDUsuario { get; set; }
+        public static string Nombre { get; set; }
+        public static string CorreoE { get; set; }
+        public static string Telefono { get; set; }
 
-        public cUsuarios()
+        public cUsuarios(int usuarioID, string nombre, string correoE, string telefono)
         {
-            Nombre = string.Empty;
-            CorreoE = string.Empty;
-            Telefono = string.Empty;
-        }
-
-        public cUsuarios(int IDusuario, string nombre, string correoE, string telefono)
-            : this()
-        {
-            IDUsuario = IDusuario;
             Nombre = nombre;
             CorreoE = correoE;
             Telefono = telefono;
         }
 
-        public cUsuarios(string nombre, string correoE, string telefono)
-            : this(0, nombre, correoE, telefono) { }
+        public cUsuarios() 
+        {
+            
+        }
 
-        private static int EjecutarProcedimientoAlmacenado(string nombreProcedimiento, SqlParameter[] parametros)
+        public static int INSERTAR_USUARIO(string nombre, string correoE, string telefono)
         {
             int retorno = 0;
 
-            using (SqlConnection Conn = ConexBD.obtenerConexion())
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-                try
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-                    using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
+                    SqlCommand cmd = new SqlCommand("INSERTAR_USUARIO", Conexion)
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddRange(parametros);
-                        retorno = cmd.ExecuteNonQuery();
-                    }
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@NOMBRE", Nombre));
+                    cmd.Parameters.Add(new SqlParameter("@CORREO", CorreoE));
+                    cmd.Parameters.Add(new SqlParameter("@TELEFONO", Telefono));
+
+
+                    retorno = cmd.ExecuteNonQuery();
                 }
-                catch (SqlException ex)
-                {
-                    retorno = -1;
-                }
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
             }
 
             return retorno;
+
         }
-
-        public static int Agregar(string nombre, string correoE, string telefono)
+        public static int BORRAR_USUARIOS_ID(int UsuarioID)
         {
-            SqlParameter[] parametros =
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-            new SqlParameter("@NOMBRE", nombre),
-            new SqlParameter("@CORREO", correoE),
-            new SqlParameter("@TELEFONO", telefono)
-        };
-
-            return EjecutarProcedimientoAlmacenado("INSERTAR_USUARIO", parametros);
-        }
-
-        public static int Borrar(int IDusuario)
-        {
-            SqlParameter[] parametros =
-            {
-            new SqlParameter("@IDUSUARIO", IDusuario)
-        };
-
-            return EjecutarProcedimientoAlmacenado("BORRAR_USUARIO", parametros);
-        }
-
-        private static List<cUsuarios> ConsultarUsuarios(string nombreProcedimiento, SqlParameter[] parametros)
-        {
-            List<cUsuarios> usuarios = new List<cUsuarios>();
-
-            using (SqlConnection Conn = ConexBD.obtenerConexion())
-            {
-                try
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-                    using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
+                    SqlCommand cmd = new SqlCommand("BORRAR_USUARIOS_ID", Conexion)
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddRange(parametros);
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@ID", UsuarioID));
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                cUsuarios usuario = new cUsuarios(
-                                    reader.GetInt32(0),
-                                    reader.GetString(1),
-                                    reader.IsDBNull(2) ? null : reader.GetString(2),
-                                    reader.IsDBNull(3) ? null : reader.GetString(3)
-                                );
-                                usuarios.Add(usuario);
-                            }
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    
+                    retorno = cmd.ExecuteNonQuery();
                 }
             }
-
-            return usuarios;
-        }
-
-        public static List<cUsuarios> ConsultaFiltro(int IDusuario)
-        {
-            SqlParameter[] parametros =
+            catch (System.Data.SqlClient.SqlException ex)
             {
-            new SqlParameter("@IDUSUARIO", IDusuario)
-        };
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
+            }
 
-            return ConsultarUsuarios("CONSULTAR_FILTRO_USUARIOS", parametros);
+            return retorno;
+
         }
-
-        public static List<cUsuarios> ObtenerUsuarios()
+        public static int ACTUALIZAR_USUARIO_ID(int ID, string nombre, string CorreoE, int telefono)
         {
-            return ConsultarUsuarios("CONSULTAR_USUARIOS", new SqlParameter[0]);
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
+            {
+                using (Conexion = ConexBD.obtenerConexion())
+                {
+                    SqlCommand cmd = new SqlCommand("ACTUALIZAR_USUARIO_ID", Conexion)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@ID", ID));
+                    cmd.Parameters.Add(new SqlParameter("@NOMBRE", nombre));
+                    cmd.Parameters.Add(new SqlParameter("@CORREO", CorreoE));
+                    cmd.Parameters.Add(new SqlParameter("@TELEFONO", telefono));
+
+                    retorno = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
+            }
+
+            return retorno;
+
         }
     }
+
+
 
 }

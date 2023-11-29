@@ -15,13 +15,13 @@ namespace Ex2R
     {
 
         /// <summary>
-        /// datagrid control.
+        /// Gridview control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView datagrid;
+        protected global::System.Web.UI.WebControls.GridView Gridview;
 
         /// <summary>
         /// txtID control.
@@ -49,6 +49,15 @@ namespace Ex2R
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtModelo;
+
+        /// <summary>
+        /// txtIDusu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtIDusu;
 
         /// <summary>
         /// Button1 control.

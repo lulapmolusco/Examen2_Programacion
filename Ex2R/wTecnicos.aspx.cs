@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Security.Cryptography;
 
 namespace Ex2R
 {
@@ -49,59 +50,66 @@ namespace Ex2R
                         using (DataTable dt = new DataTable())
                         {
                             sda.Fill(dt);
-                            datagrid.DataSource = dt;
-                            datagrid.DataBind();  // actualizar el grid view
+                            Gridview.DataSource = dt;
+                            Gridview.DataBind();  // actualizar el grid view
                         }
                     }
                 }
             }
         }
+
         protected void Button1_Click(object sender, EventArgs e)
         {
+            int valor = CLASES.cTecnicos.INSERTAR_TECNICO(txtNombre.Text, txtEspecialidad.Text);
 
-
-            int resultado = Clases.Tecnicos.Agregar(txtID.Text);
-
-            if (resultado > 0)
+            if (valor > 0)
             {
-                alertas("Tecnico ha sido agregado con exito");
-                txtID.Text = string.Empty;
+                alertas("El eecnico ha sido agregado con exito");
                 LlenarGrid();
             }
             else
             {
-                alertas("Error al agregar tecnico");
-
+                alertas("Error al ingresar el tecnico");
             }
-
         }
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            int resultado = Clases.Tecnicos.Borrar(int.Parse(txtID.Text));
+            int valor = CLASES.cTecnicos.BORRAR_TECNICOS_ID(int.Parse(txtID.Text));
 
-            if (resultado > 0)
+            if (valor > 0)
             {
-                alertas("Tecnico ha sido agregado con exito");
-                txtNombre.Text = string.Empty;
+                alertas("El tecnico ha sido borrado con exito");
                 LlenarGrid();
             }
             else
             {
-                alertas("Error al agregar tecnico");
-
+                alertas("Error al borrar el tecnico");
             }
+        }
 
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            int valor = CLASES.cTecnicos.ACTUALIZAR_TECNICO_ID(int.Parse(txtID.Text), txtNombre.Text, txtEspecialidad.Text);
 
+            if (valor > 0)
+            {
+                alertas("El tecnico ha sido actualizado con exito");
+                LlenarGrid();
+            }
+            else
+            {
+                alertas("Error al actualizar el tecnico");
+            }
         }
 
         protected void Bconsulta_Click(object sender, EventArgs e)
         {
-            int codigo = int.Parse(txtID.Text);
+            int ID = int.Parse(txtID.Text);
             string constr = ConfigurationManager.ConnectionStrings["Conexion"].ConnectionString;
             using (SqlConnection con = new SqlConnection(constr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM TIPO WHERE ID ='" + codigo + "'"))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Tecnicos WHERE TecnicoID ='" + ID + "'"))
 
 
                 using (SqlDataAdapter sda = new SqlDataAdapter())
@@ -111,10 +119,11 @@ namespace Ex2R
                     using (DataTable dt = new DataTable())
                     {
                         sda.Fill(dt);
-                        datagrid.DataSource = dt;
-                        datagrid.DataBind();  
+                        Gridview.DataSource = dt;
+                        Gridview.DataBind();  // actualizar el grid view
                     }
                 }
+
             }
         }
     }

@@ -9,117 +9,118 @@ namespace Ex2R.CLASES
 {
     public class cTecnicos
     {
-            public int TecnicoID { get; set; }
-            public string Nombre { get; set; }
-            public string Especialidad { get; set; }
+        public int IDTecnico { get; set; }
+        public string Nombre { get; set; }
+        public string Especialidad { get; set; }
 
-            public cTecnicos() { }
+        public cTecnicos(int IDtecnico, string nombre, string especialidad)
+        {
+            IDTecnico = IDtecnico;
+            Nombre = nombre;
+            Especialidad = especialidad;
+        }
 
-            public cTecnicos(int IDtecnico, string nombre, string especialidad)
+        public cTecnicos(string nombre, string especialidad)
+        {
+            Nombre = nombre;
+            Especialidad = especialidad;
+        }
+
+        public cTecnicos() { }
+
+        public static int INSERTAR_TECNICO(string nombre, string especialidad)
+        {
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-                IDTecnico = IDtecnico;
-                Nombre = nombre;
-                Especialidad = especialidad;
-            }
-
-            public cTecnicos(string nombre, string especialidad)
-                : this(0, nombre, especialidad) { }
-
-            private static int EjecutarProcedimientoAlmacenado(string nombreProcedimiento, SqlParameter[] parametros)
-            {
-                int retorno = 0;
-
-                using (SqlConnection Conn = ConexBD.obtenerConexion())
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-                    try
+                    SqlCommand cmd = new SqlCommand("INSERTAR_TENICO", Conexion)
                     {
-                        using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddRange(parametros);
-                            retorno = cmd.ExecuteNonQuery();
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        retorno = -1;
-                    }
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@NOMBRE", nombre));
+                    cmd.Parameters.Add(new SqlParameter("@ESPECIALIDAD", especialidad));
+
+
+                    retorno = cmd.ExecuteNonQuery();
                 }
-
-                return retorno;
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
             }
 
-            public static int Agregar(string nombre, string especialidad)
+            return retorno;
+
+        }
+        public static int BORRAR_TECNICOS_ID(int IDTecnico)
+        {
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-                SqlParameter[] parametros =
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-            new SqlParameter("@NOMBRE", nombre),
-            new SqlParameter("@ESPECIALIDAD", especialidad)
-        };
-
-                return EjecutarProcedimientoAlmacenado("INSERTAR_TECNICO", parametros);
-            }
-
-            public static int Borrar(int IDtecnico)
-            {
-                SqlParameter[] parametros =
-                {
-            new SqlParameter("@IDTECNICO", IDtecnico)
-        };
-
-                return EjecutarProcedimientoAlmacenado("BORRAR_TECNICO", parametros);
-            }
-
-            private static List<cTecnicos> ConsultarTecnicos(string nombreProcedimiento, SqlParameter[] parametros)
-            {
-                List<cTecnicos> tecnicos = new List<cTecnicos>();
-
-                using (SqlConnection Conn = ConexBD.obtenerConexion())
-                {
-                    try
+                    SqlCommand cmd = new SqlCommand("BORRAR_TECNICOS_ID", Conexion)
                     {
-                        using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddRange(parametros);
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@ID", IDTecnico));
 
-                            using (SqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                cTecnicos tecnico = new cTecnicos(
-                                        reader.GetInt32(0),
-                                        reader.GetString(1),
-                                        reader.GetString(2)
-                                    );
-                                    tecnicos.Add(tecnico);
-                                }
-                            }
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        
-                    }
+                    retorno = cmd.ExecuteNonQuery();
                 }
-
-                return tecnicos;
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
             }
 
-            public static List<cTecnicos> ConsultaFiltro(int IDtecnico)
+            return retorno;
+
+        }
+        public static int ACTUALIZAR_TECNICO_ID(int ID, string nombre, string especialidad)
+        {
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-                SqlParameter[] parametros =
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-            new SqlParameter("@IDTECNICO", IDtecnico)
-        };
+                    SqlCommand cmd = new SqlCommand("ACTUALIZAR_TECNICO_ID", Conexion)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
 
-                return ConsultarTecnicos("CONSULTAR_FILTRO_TECNICOS", parametros);
+                    cmd.Parameters.Add(new SqlParameter("@NOMBRE", nombre));
+                    cmd.Parameters.Add(new SqlParameter("@ESPECIALIDAD", especialidad));
+
+                    retorno = cmd.ExecuteNonQuery();
+                }
             }
-
-            public static List<cTecnicos> ObtenerTecnicos()
+            catch (System.Data.SqlClient.SqlException ex)
             {
-                return ConsultarTecnicos("CONSULTAR_TECNICOS", new SqlParameter[0]);
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
             }
 
+            return retorno;
+
+        }
     }
 }

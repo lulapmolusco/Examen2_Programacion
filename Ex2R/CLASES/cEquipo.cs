@@ -9,7 +9,6 @@ namespace Ex2R.CLASES
 {
     public class cEquipo
     {
-
         public int IDEquipo { get; set; }
         public string TipoEquipo { get; set; }
         public string Modelo { get; set; }
@@ -26,105 +25,107 @@ namespace Ex2R.CLASES
         }
 
         public cEquipo(string tipoEquipo, string modelo, int IDusuario)
-            : this(0, tipoEquipo, modelo, IDusuario) { }
+        {
+            TipoEquipo = tipoEquipo;
+            Modelo = modelo;
+            IDUsuario = IDusuario;
+        }
 
-        private static int EjecutarProcedimientoAlmacenado(string nombreProcedimiento, SqlParameter[] parametros)
+        public static int INSERTAR_EQUIPO(string tipoEquipo, string modelo, int IDusuario)
         {
             int retorno = 0;
 
-            using (SqlConnection Conn = ConexBD.obtenerConexion())
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-                try
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-                    using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
+                    SqlCommand cmd = new SqlCommand("INSERTAR_EQUIPO", Conexion)
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddRange(parametros);
-                        retorno = cmd.ExecuteNonQuery();
-                    }
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@TIPOEQUIPO", tipoEquipo));
+                    cmd.Parameters.Add(new SqlParameter("@MODELO", modelo));
+                    cmd.Parameters.Add(new SqlParameter("@IDUSUARIO", IDusuario));
+
+
+                    retorno = cmd.ExecuteNonQuery();
                 }
-                catch (SqlException ex)
-                {
-                    retorno = -1;
-                }
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
             }
 
             return retorno;
+
         }
-
-        public static int Agregar(string tipoEquipo, string modelo, int IDusuario)
+        public static int BORRAR_EQUIPO_ID(int IDEquipo)
         {
-            SqlParameter[] parametros =
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
             {
-            new SqlParameter("@TIPOEQUIPO", tipoEquipo),
-            new SqlParameter("@MODELO", modelo),
-            new SqlParameter("@IDUSUARIO", IDusuario)
-                    };
-
-            return EjecutarProcedimientoAlmacenado("INSERTAR_EQUIPO", parametros);
-        }
-
-        public static int Borrar(int IDequipo)
-        {
-            SqlParameter[] parametros =
-            {
-            new SqlParameter("@IDEQUIPO", IDequipo)
-                    };
-
-            return EjecutarProcedimientoAlmacenado("BORRAR_EQUIPO", parametros);
-        }
-
-        private static List<cEquipo> ConsultarEquipos(string nombreProcedimiento, SqlParameter[] parametros)
-        {
-            List<cEquipo> equipos = new List<cEquipo>();
-
-            using (SqlConnection Conn = ConexBD.obtenerConexion())
-            {
-                try
+                using (Conexion = ConexBD.obtenerConexion())
                 {
-                    using (SqlCommand cmd = new SqlCommand(nombreProcedimiento, Conn))
+                    SqlCommand cmd = new SqlCommand("BORRAR_EQUIPOS_ID", Conexion)
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddRange(parametros);
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.Add(new SqlParameter("@ID", IDEquipo));
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                cEquipo equipo = new cEquipo(
-                                            reader.GetInt32(0),
-                                            reader.GetString(1),
-                                            reader.IsDBNull(2) ? null : reader.GetString(2),
-                                            reader.IsDBNull(3) ? 0 : reader.GetInt32(3)
-                                        );
-                                equipos.Add(equipo);
-                            }
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    
+                    retorno = cmd.ExecuteNonQuery();
                 }
             }
-
-            return equipos;
-        }
-
-        public static List<cEquipo> ConsultaFiltro(int IDequipo)
-        {
-            SqlParameter[] parametros =
+            catch (System.Data.SqlClient.SqlException ex)
             {
-            new SqlParameter("@IDEQUIPO", IDequipo)
-                     };
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
+            }
 
-            return ConsultarEquipos("CONSULTAR_FILTRO_EQUIPOS", parametros);
+            return retorno;
+
         }
-
-        public static List<cEquipo> ObtenerEquipos()
+        public static int ACTUALIZAR_EQUIPO_ID(string tipoEquipo, string modelo, int IDusuario)
         {
-            return ConsultarEquipos("CONSULTAR_EQUIPOS", new SqlParameter[0]);
+            int retorno = 0;
+
+            SqlConnection Conexion = new SqlConnection();
+            try
+            {
+                using (Conexion = ConexBD.obtenerConexion())
+                {
+                    SqlCommand cmd = new SqlCommand("ACTUALIZAR_EQUIPO_ID", Conexion)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    cmd.Parameters.Add(new SqlParameter("@TIPOEQUIPO", tipoEquipo));
+                    cmd.Parameters.Add(new SqlParameter("@MODELO", modelo));
+                    cmd.Parameters.Add(new SqlParameter("@IDUSUARIO", IDusuario));
+
+                    retorno = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                retorno = -1;
+            }
+            finally
+            {
+                Conexion.Close();
+            }
+
+            return retorno;
+
         }
     }
-      
 }

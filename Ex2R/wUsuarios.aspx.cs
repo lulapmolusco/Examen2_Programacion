@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Security.Cryptography;
 
 namespace Ex2R
 {
@@ -50,59 +51,66 @@ namespace Ex2R
                         using (DataTable dt = new DataTable())
                         {
                             sda.Fill(dt);
-                            datagrid.DataSource = dt;
-                            datagrid.DataBind();  
+                            Gridview.DataSource = dt;
+                            Gridview.DataBind();  
                         }
                     }
                 }
             }
         }
+
         protected void Button1_Click(object sender, EventArgs e)
         {
+            int valor = CLASES.cUsuarios.INSERTAR_USUARIO(txtNombre.Text, txtCorreo.Text, txtTel.Text);
 
-
-            int resultado = Clases.Usuarios.Agregar(txtID.Text);
-
-            if (resultado > 0)
+            if (valor > 0)
             {
-                alertas("El usuario ha sido agregado con exito");
-                txtID.Text = string.Empty;
+                alertas("El usuario fue agregado con exito");
                 LlenarGrid();
             }
             else
             {
                 alertas("Error al agregar el usuario");
-
             }
-
         }
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            int resultado = Clases.Usuarios.Borrar(int.Parse(txtID.Text));
+            int valor = CLASES.cUsuarios.BORRAR_USUARIOS_ID(int.Parse(txtID.Text));
 
-            if (resultado > 0)
+            if (valor > 0)
             {
-                alertas("El usuario ha sido agregado con exito");
-                txtNombre.Text = string.Empty;
+                alertas("El usuario fue borrado con exito");
                 LlenarGrid();
             }
             else
             {
-                alertas("Error al agregar al usuario");
-
+                alertas("Error al borrar el usuario");
             }
+        }
 
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            int valor = CLASES.cUsuarios.ACTUALIZAR_USUARIO_ID(int.Parse(txtID.Text), txtNombre.Text, txtCorreo.Text, int.Parse(txtTel.Text));
 
+            if (valor > 0)
+            {
+                alertas("El usuario fue actualizado con exito");
+                LlenarGrid();
+            }
+            else
+            {
+                alertas("Error al actualizar el usuario");
+            }
         }
 
         protected void Bconsulta_Click(object sender, EventArgs e)
         {
-            int codigo = int.Parse(txtID.Text);
+            int ID = int.Parse(txtID.Text);
             string constr = ConfigurationManager.ConnectionStrings["Conexion"].ConnectionString;
             using (SqlConnection con = new SqlConnection(constr))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM TIPO WHERE ID ='" + codigo + "'"))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Usuarios WHERE UsuarioID ='" + ID + "'"))
 
 
                 using (SqlDataAdapter sda = new SqlDataAdapter())
@@ -112,8 +120,8 @@ namespace Ex2R
                     using (DataTable dt = new DataTable())
                     {
                         sda.Fill(dt);
-                        datagrid.DataSource = dt;
-                        datagrid.DataBind();  
+                        Gridview.DataSource = dt;
+                        Gridview.DataBind();  
                     }
                 }
             }
